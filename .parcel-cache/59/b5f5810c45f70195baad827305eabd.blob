@@ -556,9 +556,7 @@ const controlServings = function (newServings) {
 };
 
 const controlAddBookmark = function () {
-  if (!model.state.recipe.bookmarked) model.addBookmark(model.state.recipe);else model.removeBookmark(model.state.recipe.id);
-
-  _recipeView.default.update(model.state.recipe);
+  if (!model.state.recipe.bookmarked) model.addBookmark(model.state.recipe);else _recipeView.default.update(model.state.recipe);
 };
 
 function init() {
@@ -7516,7 +7514,7 @@ process.umask = function () {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.removeBookmark = exports.addBookmark = exports.updateServings = exports.getSearchResultPage = exports.loadSearchResults = exports.loadRecipe = exports.state = void 0;
+exports.addBookmark = exports.updateServings = exports.getSearchResultPage = exports.loadSearchResults = exports.loadRecipe = exports.state = void 0;
 
 var _regeneratorRuntime = require("regenerator-runtime");
 
@@ -7613,15 +7611,6 @@ const addBookmark = function (recipe) {
 };
 
 exports.addBookmark = addBookmark;
-
-const removeBookmark = function (id) {
-  const index = state.bookmarks.find(bookmark => bookmark.id === id);
-  state.bookmarks.splice(index, 1); //Mark current recipe as not bookmarked
-
-  if (id === state.recipe.id) state.recipe.bookmarked = false;
-};
-
-exports.removeBookmark = removeBookmark;
 },{"regenerator-runtime":"e155e0d3930b156f86c48e8d05522b16","./config.js":"09212d541c5c40ff2bd93475a904f8de","./helper.js":"ca5e72bede557533b2de19db21a2a688"}],"e155e0d3930b156f86c48e8d05522b16":[function(require,module,exports) {
 /**
  * Copyright (c) 2014-present, Facebook, Inc.

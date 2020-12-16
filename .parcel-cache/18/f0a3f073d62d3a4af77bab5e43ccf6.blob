@@ -556,9 +556,7 @@ const controlServings = function (newServings) {
 };
 
 const controlAddBookmark = function () {
-  if (!model.state.recipe.bookmarked) model.addBookmark(model.state.recipe);else model.removeBookmark(model.state.recipe.id);
-
-  _recipeView.default.update(model.state.recipe);
+  if (!model.state.recipe.bookmarked) model.addBookmark(model.state.recipe);else _recipeView.default.update(model.state.recipe);
 };
 
 function init() {
