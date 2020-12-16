@@ -1,0 +1,10 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.TIMEOUT = exports.API_URL = void 0;
+const API_URL = `https://forkify-api.herokuapp.com/api/v2/recipes`;
+exports.API_URL = API_URL;
+const TIMEOUT = 5;
+exports.TIMEOUT = TIMEOUT;

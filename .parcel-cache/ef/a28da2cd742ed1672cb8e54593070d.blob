@@ -1,0 +1,49 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _view = _interopRequireDefault(require("./view.js"));
+
+var _icons = _interopRequireDefault(require("url:../../img/icons.svg"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+class PaginationView extends _view.default {
+  constructor(...args) {
+    super(...args);
+
+    _defineProperty(this, "_parentElement", document.querySelector('.pagination'));
+  }
+
+  _generatedMarkup() {
+    const numPages = Math.ceil(this._data.results.length / this._data.resultsPerPage);
+    console.log(numPages); // Page 1 và còn page nữa
+
+    if (this._data.page === 1 && numPages > 1) {
+      console.log(`page 1 and others`);
+    } // page cuối cùng
+
+
+    if (this._data.page === numPages) {
+      return `last Page`;
+    } // page bình thường
+
+
+    if (this._data.page < numPages) {
+      return `others`;
+    } // chi 1 page duy nhat
+
+
+    return 'only 1';
+  }
+
+}
+
+var _default = new PaginationView();
+
+exports.default = _default;
