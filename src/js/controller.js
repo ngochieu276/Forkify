@@ -3,6 +3,7 @@ import * as model from './model.js';
 import recipeView from './view/recipeView.js';
 import searchView from './view/searchView.js';
 import resultsView from './view/resultsView.js';
+import bookmarkView from './view/bookmarkView.js';
 import paginationView from './view/paginationView.js';
 
 import 'core-js/stable';
@@ -26,12 +27,12 @@ const controlRecipe = async function() {
    recipeView.renderSpinner()
    
      // 0)
-     resultsView.update(model.getSearchResultPage())
+     resultsView.update(model.getSearchResultPage());
+     bookmarkView.update(model.state.bookmarks)
     // 1) loading recipe
    await model.loadRecipe(id);
     /// 2) rendering recipe
    recipeView.render(model.state.recipe);
-   console.log(recipeView)
   } catch(err) {
     recipeView.renderError()
   }
@@ -72,9 +73,13 @@ const controlServings = function(newServings) {
 }
 
 const controlAddBookmark = function() {
+  // 1) Add or remove bookmark
   if(!model.state.recipe.bookmarked) model.addBookmark(model.state.recipe);
   else model.removeBookmark(model.state.recipe.id)
+  //2 Update recipe view
   recipeView.update(model.state.recipe)
+  //3 Render bookmark
+  bookmarkView.render(model.state.bookmarks)
 }
 
 function init() {

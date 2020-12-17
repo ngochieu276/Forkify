@@ -506,14 +506,14 @@ const controlRecipe = async function () {
     _recipeView.default.renderSpinner(); // 0)
 
 
-    _resultsView.default.update(model.getSearchResultPage());
-
-    _bookmarkView.default.update(model.state.bookmarks); // 1) loading recipe
+    _resultsView.default.update(model.getSearchResultPage()); // 1) loading recipe
 
 
     await model.loadRecipe(id); /// 2) rendering recipe
 
     _recipeView.default.render(model.state.recipe);
+
+    console.log(_recipeView.default);
   } catch (err) {
     _recipeView.default.renderError();
   }
@@ -7575,7 +7575,7 @@ const loadSearchResults = async function (query) {
     state.research.results = data.data.recipes.map(rec => {
       return {
         id: rec.id,
-        image: rec.image_url,
+        imageUrl: rec.image_url,
         publisher: rec.publisher,
         title: rec.title
       };
@@ -8584,13 +8584,11 @@ class View {
     _defineProperty(this, "_data", void 0);
   }
 
-  render(data, render = true) {
+  render(data) {
     if (!data || Array.isArray(data) && data.length === 0) return this.renderError();
     this._data = data;
 
     const markup = this._generatedMarkup();
-
-    if (!render) return markup;
 
     this._clear();
 
@@ -8824,8 +8822,6 @@ var _view = _interopRequireDefault(require("./view.js"));
 
 var _icons = _interopRequireDefault(require("url:../../img/icons.svg"));
 
-var _previewView = _interopRequireDefault(require("./previewView.js"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -8840,48 +8836,20 @@ class ResultView extends _view.default {
   }
 
   _generatedMarkup() {
-    return this._data.map(results => _previewView.default.render(results, false)).join('');
+    return this._data.map(this._generatedMarkupPreview).join('');
   }
 
-}
-
-var _default = new ResultView();
-
-exports.default = _default;
-},{"./view.js":"523fc24dda30a876e9c537b2e00e10f8","url:../../img/icons.svg":"fa73e6715d3eb3924a6df1754912af61","./previewView.js":"cbc04ae8c4a724d5b53c4d2a13124cfa"}],"cbc04ae8c4a724d5b53c4d2a13124cfa":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _view = _interopRequireDefault(require("./view.js"));
-
-var _icons = _interopRequireDefault(require("url:../../img/icons.svg"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-class PreviewView extends _view.default {
-  constructor(...args) {
-    super(...args);
-
-    _defineProperty(this, "_parentElement", '');
-  }
-
-  _generatedMarkup(result) {
+  _generatedMarkupPreview(result) {
     const id = window.location.hash.slice(1);
     return `
      <li class="preview">
-            <a class="preview__link ${this._data.id === id ? 'preview__link--active' : ''}"  href="#${this._data.id}">
+            <a class="preview__link ${result.id === id ? 'preview__link--active' : ''}"  href="#${result.id}">
               <figure class="preview__fig">
-                <img src="${this._data.image}" alt="${this._data.title}" />
+                <img src="${result.imageUrl}" alt="${result.title}" />
               </figure>
               <div class="preview__data">
-                <h4 class="preview__title">${this._data.publisher}</h4>
-                <p class="preview__publisher">${this._data.title}</p>
+                <h4 class="preview__title">${result.publisher}</h4>
+                <p class="preview__publisher">${result.title}</p>
               </div>
             </a>
           </li>
@@ -8890,7 +8858,7 @@ class PreviewView extends _view.default {
 
 }
 
-var _default = new PreviewView();
+var _default = new ResultView();
 
 exports.default = _default;
 },{"./view.js":"523fc24dda30a876e9c537b2e00e10f8","url:../../img/icons.svg":"fa73e6715d3eb3924a6df1754912af61"}],"9140167fe8de071235d11a2fe09cdf6b":[function(require,module,exports) {
@@ -8991,8 +8959,6 @@ exports.default = void 0;
 
 var _view = _interopRequireDefault(require("./view.js"));
 
-var _previewView = _interopRequireDefault(require("./previewView.js"));
-
 var _icons = _interopRequireDefault(require("url:../../img/icons.svg"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -9009,7 +8975,24 @@ class BookmarkView extends _view.default {
   }
 
   _generatedMarkup() {
-    return this._data.map(bookmark => _previewView.default.render(bookmark, false)).join('');
+    return this._data.map(this._generatedMarkupPreview).join('');
+  }
+
+  _generatedMarkupPreview(result) {
+    const id = window.location.hash.slice(1);
+    return `
+     <li class="preview">
+            <a class="preview__link ${result.id === id ? 'preview__link--active' : ''}"  href="#${result.id}">
+              <figure class="preview__fig">
+                <img src=${result.imageUrl} alt="${result.title}" />
+              </figure>
+              <div class="preview__data">
+                <h4 class="preview__title">${result.publisher}</h4>
+                <p class="preview__publisher">${result.title}</p>
+              </div>
+            </a>
+          </li>
+   `;
   }
 
 }
@@ -9017,6 +9000,6 @@ class BookmarkView extends _view.default {
 var _default = new BookmarkView();
 
 exports.default = _default;
-},{"./view.js":"523fc24dda30a876e9c537b2e00e10f8","url:../../img/icons.svg":"fa73e6715d3eb3924a6df1754912af61","./previewView.js":"cbc04ae8c4a724d5b53c4d2a13124cfa"}]},{},["292b570475552e73b58c7142f3cda3d2","46d7413c9d03f2d1130ee03fa0ba1d19","175e469a7ea7db1c8c0744d04372621f"], null)
+},{"./view.js":"523fc24dda30a876e9c537b2e00e10f8","url:../../img/icons.svg":"fa73e6715d3eb3924a6df1754912af61"}]},{},["292b570475552e73b58c7142f3cda3d2","46d7413c9d03f2d1130ee03fa0ba1d19","175e469a7ea7db1c8c0744d04372621f"], null)
 
 //# sourceMappingURL=controller.12eb158b.js.map

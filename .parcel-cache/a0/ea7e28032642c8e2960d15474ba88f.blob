@@ -514,6 +514,8 @@ const controlRecipe = async function () {
     await model.loadRecipe(id); /// 2) rendering recipe
 
     _recipeView.default.render(model.state.recipe);
+
+    console.log(_recipeView.default);
   } catch (err) {
     _recipeView.default.renderError();
   }
@@ -7575,7 +7577,7 @@ const loadSearchResults = async function (query) {
     state.research.results = data.data.recipes.map(rec => {
       return {
         id: rec.id,
-        image: rec.image_url,
+        imageUrl: rec.image_url,
         publisher: rec.publisher,
         title: rec.title
       };
@@ -8877,7 +8879,7 @@ class PreviewView extends _view.default {
      <li class="preview">
             <a class="preview__link ${this._data.id === id ? 'preview__link--active' : ''}"  href="#${this._data.id}">
               <figure class="preview__fig">
-                <img src="${this._data.image}" alt="${this._data.title}" />
+                <img src="${this._data.imageUrl}" alt="${this._data.title}" />
               </figure>
               <div class="preview__data">
                 <h4 class="preview__title">${this._data.publisher}</h4>

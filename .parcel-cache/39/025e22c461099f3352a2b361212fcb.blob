@@ -514,6 +514,8 @@ const controlRecipe = async function () {
     await model.loadRecipe(id); /// 2) rendering recipe
 
     _recipeView.default.render(model.state.recipe);
+
+    console.log(_recipeView.default);
   } catch (err) {
     _recipeView.default.renderError();
   }
