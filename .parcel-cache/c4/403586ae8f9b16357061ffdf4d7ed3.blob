@@ -1,0 +1,129 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.removeBookmark = exports.addBookmark = exports.updateServings = exports.getSearchResultPage = exports.loadSearchResults = exports.loadRecipe = exports.state = void 0;
+
+var _regeneratorRuntime = require("regenerator-runtime");
+
+var _config = require("./config.js");
+
+var _helper = require("./helper.js");
+
+// import { stat } from "fs";
+const state = {
+  recipe: {},
+  research: {
+    query: '',
+    page: 1,
+    results: [],
+    resultsPerPage: _config.RESULT_PER_PAGE
+  },
+  bookmarks: []
+};
+exports.state = state;
+
+const loadRecipe = async function (id) {
+  try {
+    const data = await (0, _helper.getJSON)(`${_config.API_URL}/${id}`);
+    let {
+      recipe
+    } = data.data;
+    state.recipe = {
+      id: recipe.id,
+      title: recipe.title,
+      publisher: recipe.publisher,
+      sourceUrl: recipe.source_url,
+      image: recipe.image_url,
+      servings: recipe.servings,
+      cookingTime: recipe.cooking_time,
+      ingredients: recipe.ingredients
+    };
+    if (state.bookmarks.some(bookmark => bookmark.id === id)) state.recipe.bookmarked = true;else state.recipe.bookmarked = false;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
+
+exports.loadRecipe = loadRecipe;
+
+const loadSearchResults = async function (query) {
+  try {
+    const data = await (0, _helper.getJSON)(`${_config.API_URL}?search=${query}`);
+    console.log(data);
+    state.research.results = data.data.recipes.map(rec => {
+      return {
+        id: rec.id,
+        image: rec.image_url,
+        publisher: rec.publisher,
+        title: rec.title
+      };
+    });
+    state.research.page = 1;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
+
+exports.loadSearchResults = loadSearchResults;
+
+const getSearchResultPage = function (page = state.research.page) {
+  state.research.page = page;
+  const start = (page - 1) * state.research.resultsPerPage;
+  const end = page * state.research.resultsPerPage; // console.log(state.research.results.slice(start,end))
+
+  return state.research.results.slice(start, end);
+}; //
+
+
+exports.getSearchResultPage = getSearchResultPage;
+
+const updateServings = function (newServings) {
+  state.recipe.ingredients.forEach(ing => {
+    //update the quantity
+    ing.quantity = ing.quantity + 1; //update the recipe
+
+    state.recipe.servings = newServings;
+  });
+  console.log(state.recipe.ingredients);
+};
+
+exports.updateServings = updateServings;
+
+const persitBookmarks = function () {
+  localStorage.setItem('bookmarks', JSON.stringify(state.bookmarks));
+};
+
+const addBookmark = function (recipe) {
+  //add bookmark
+  state.bookmarks.push(recipe); //Mark current recipe as bookmark
+
+  if (recipe.id === state.recipe.id) state.recipe.bookmarked = true;
+  persitBookmarks();
+};
+
+exports.addBookmark = addBookmark;
+
+const removeBookmark = function (id) {
+  const index = state.bookmarks.find(bookmark => bookmark.id === id);
+  state.bookmarks.splice(index, 1); //Mark current recipe as not bookmarked
+
+  if (id === state.recipe.id) state.recipe.bookmarked = false;
+  persitBookmarks();
+};
+
+exports.removeBookmark = removeBookmark;
+
+const init = function () {
+  const storage = localStorage.getItem('bookmarks');
+  if (storage) state.bookmarks = JSON.parse(storage);
+};
+
+init();
+
+const clearBookmarks = function () {
+  localStorage.clear('bookmarks');
+}; // clearBookmarks()

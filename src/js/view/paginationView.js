@@ -58,9 +58,7 @@ class PaginationView extends View {
    `
   }
    // chi 1 page duy nhat
-  if (currentPage === 1 && numPages === 1 ) {
-    return ``;
-  }
+  if (currentPage === 1 && numPages === 1 ) return ``
  }
  }
 

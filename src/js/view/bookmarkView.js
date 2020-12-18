@@ -7,6 +7,10 @@ class BookmarkView extends View {
  _parentElement = document.querySelector('.bookmarks__list');
  _errorMessage = 'No bookmark yet.Find a nice recipe to fill :('
 
+addHanlerRender(handler) {
+ window.addEventListener('load',handler)
+}
+
  _generatedMarkup() {
   return this._data.map(bookmark => previewView.render(bookmark, false)).join('')
    

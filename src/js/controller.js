@@ -25,7 +25,7 @@ const controlRecipe = async function() {
      const id = window.location.hash.slice(1);
    if (!id) return;
    recipeView.renderSpinner()
-   
+     
      // 0)
      resultsView.update(model.getSearchResultPage());
      bookmarkView.update(model.state.bookmarks)
@@ -82,7 +82,12 @@ const controlAddBookmark = function() {
   bookmarkView.render(model.state.bookmarks)
 }
 
+const controlBookmark = function() {
+    bookmarkView.render(model.state.bookmarks)
+  }
+
 function init() {
+  bookmarkView.addHanlerRender(controlBookmark)
 recipeView.addHandleRender(controlRecipe);
 searchView.addHandleSearch(controlSearchResults);
 paginationView.addHandlerClick(controlPagination);
